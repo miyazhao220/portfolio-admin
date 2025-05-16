@@ -1,35 +1,80 @@
 import React from 'react';
-import { Typography, Card, Row, Col, Button } from 'antd';
-import { Link } from 'react-router-dom';
+import { Layout, Menu } from 'antd';
+import { useNavigate, useLocation } from 'react-router-dom';
+import {
+  UserOutlined,
+  ProjectOutlined,
+  MailOutlined,
+  LogoutOutlined,
+} from '@ant-design/icons';
 
-const { Title, Paragraph } = Typography;
+const { Header, Content, Sider } = Layout;
 
 function Dashboard() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const menuItems = [
+    {
+      key: '/about',
+      icon: <UserOutlined />,
+      label: '关于我',
+    },
+    {
+      key: '/portfolio',
+      icon: <ProjectOutlined />,
+      label: '作品集',
+    },
+    {
+      key: '/contact',
+      icon: <MailOutlined />,
+      label: '联系方式',
+    },
+    {
+      key: 'logout',
+      icon: <LogoutOutlined />,
+      label: '退出登录',
+    },
+  ];
+
+  const handleMenuClick = ({ key }) => {
+    if (key === 'logout') {
+      navigate('/login');
+    } else {
+      navigate(key);
+    }
+  };
+
   return (
-    <div style={{ padding: '50px 0' }}>
-      <Title level={2}>内容管理后台</Title>
-      <Paragraph>欢迎使用内容管理后台，请选择以下模块进行内容维护。</Paragraph>
-      <Row gutter={[16, 16]}>
-        <Col span={8}>
-          <Card title="关于我" bordered={false}>
-            <Paragraph>编辑个人简介、职业背景、技能条等内容。</Paragraph>
-            <Button type="primary"><Link to="/admin/about">编辑</Link></Button>
-          </Card>
-        </Col>
-        <Col span={8}>
-          <Card title="作品集" bordered={false}>
-            <Paragraph>管理项目卡片、分类筛选、详情页等内容。</Paragraph>
-            <Button type="primary"><Link to="/admin/portfolio">编辑</Link></Button>
-          </Card>
-        </Col>
-        <Col span={8}>
-          <Card title="联系方式" bordered={false}>
-            <Paragraph>更新邮箱、微信、LinkedIn等联系方式。</Paragraph>
-            <Button type="primary"><Link to="/admin/contact">编辑</Link></Button>
-          </Card>
-        </Col>
-      </Row>
-    </div>
+    <Layout style={{ minHeight: '100vh' }}>
+      <Header style={{ background: '#fff', padding: 0, textAlign: 'center' }}>
+        <h1>作品集管理后台</h1>
+      </Header>
+      <Layout>
+        <Sider width={200} style={{ background: '#fff' }}>
+          <Menu
+            mode="inline"
+            selectedKeys={[location.pathname]}
+            style={{ height: '100%', borderRight: 0 }}
+            items={menuItems}
+            onClick={handleMenuClick}
+          />
+        </Sider>
+        <Layout style={{ padding: '24px' }}>
+          <Content
+            style={{
+              background: '#fff',
+              padding: 24,
+              margin: 0,
+              minHeight: 280,
+            }}
+          >
+            <h2>欢迎使用作品集管理后台</h2>
+            <p>请从左侧菜单选择要编辑的内容。</p>
+          </Content>
+        </Layout>
+      </Layout>
+    </Layout>
   );
 }
 

@@ -1,37 +1,63 @@
-import React from 'react';
-import { Typography, Form, Input, Button, message, InputNumber } from 'antd';
+import React, { useState } from 'react';
+import { Form, Input, Button, message } from 'antd';
+import { useNavigate } from 'react-router-dom';
 
-const { Title, Paragraph } = Typography;
+const { TextArea } = Input;
 
 function AboutEdit() {
-  const [form] = Form.useForm();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
-  const onFinish = (values) => {
-    console.log('提交内容:', values);
-    message.success('内容已更新！');
+  const onFinish = async (values) => {
+    setLoading(true);
+    try {
+      // 这里应该调用后端 API 保存数据
+      message.success('保存成功');
+      navigate('/dashboard');
+    } catch (error) {
+      message.error('保存失败');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div style={{ padding: '50px 0' }}>
-      <Title level={2}>编辑关于我</Title>
-      <Form form={form} onFinish={onFinish} layout="vertical">
-        <Form.Item name="background" label="职业背景" rules={[{ required: true, message: '请输入职业背景' }]}>
-          <Input.TextArea rows={4} />
+    <div style={{ padding: '24px' }}>
+      <h2>编辑关于我</h2>
+      <Form
+        layout="vertical"
+        onFinish={onFinish}
+        initialValues={{
+          title: '关于我',
+          content: '在这里输入关于我的内容...',
+        }}
+      >
+        <Form.Item
+          name="title"
+          label="标题"
+          rules={[{ required: true, message: '请输入标题' }]}
+        >
+          <Input />
         </Form.Item>
-        <Form.Item name="skill1" label="AI技术理解" rules={[{ required: true, message: '请输入技能值' }]}>
-          <InputNumber min={0} max={100} />
+
+        <Form.Item
+          name="content"
+          label="内容"
+          rules={[{ required: true, message: '请输入内容' }]}
+        >
+          <TextArea rows={6} />
         </Form.Item>
-        <Form.Item name="skill2" label="产品全周期管理" rules={[{ required: true, message: '请输入技能值' }]}>
-          <InputNumber min={0} max={100} />
-        </Form.Item>
-        <Form.Item name="skill3" label="产品运营与增长" rules={[{ required: true, message: '请输入技能值' }]}>
-          <InputNumber min={0} max={100} />
-        </Form.Item>
-        <Form.Item name="skill4" label="资源整合与领导力" rules={[{ required: true, message: '请输入技能值' }]}>
-          <InputNumber min={0} max={100} />
-        </Form.Item>
+
         <Form.Item>
-          <Button type="primary" htmlType="submit">保存</Button>
+          <Button type="primary" htmlType="submit" loading={loading}>
+            保存
+          </Button>
+          <Button
+            style={{ marginLeft: 8 }}
+            onClick={() => navigate('/dashboard')}
+          >
+            取消
+          </Button>
         </Form.Item>
       </Form>
     </div>
